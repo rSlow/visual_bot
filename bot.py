@@ -1,9 +1,9 @@
 import logging
+import os
 
 import pytz
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.types import ParseMode, Message, MediaGroup, ReplyKeyboardMarkup
 
 from schemas import Post, PostMediaGroup, Queue
@@ -44,14 +44,10 @@ class CustomBot(Bot):
         return await self.send_post(post=post, chat_id=self.channel_id)
 
 
-WEBHOOK_HOST = "https://sohavisualbot.herokuapp.com"
-TOKEN = "5378540697:AAGWsxYPguOQqB45jFwt3-scL0BPpzb1j-E"
-WEBHOOK_PATH = f"/{TOKEN}"
-WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+TOKEN = os.getenv("SOHABOT_TOKEN")
 
 storage = MemoryStorage()
 logging.basicConfig(level=logging.INFO)
 
 bot = CustomBot(token=TOKEN, parse_mode=ParseMode.HTML)
 dp = Dispatcher(bot=bot, storage=storage)
-dp.middleware.setup(LoggingMiddleware())
