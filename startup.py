@@ -1,7 +1,9 @@
 import logging
+from bot import bot, WEBHOOK_URL
 
 
 async def on_startup(_):
+    await bot.set_webhook(WEBHOOK_URL)
     try:
         import handlers
     except ImportError as ex:

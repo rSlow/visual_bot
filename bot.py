@@ -44,9 +44,13 @@ class CustomBot(Bot):
         return await self.send_post(post=post, chat_id=self.channel_id)
 
 
-token = os.getenv("SOHABOT_TOKEN")
+WEBHOOK_HOST = "https://sohavisualbot.herokuapp.com/"
+TOKEN = os.getenv("SOHABOT_TOKEN")
+WEBHOOK_PATH = f"/{TOKEN}"
+WEBHOOK_URL = f"{WEBHOOK_HOST}/{WEBHOOK_PATH}"
+
 storage = MemoryStorage()
 logging.basicConfig(level=logging.INFO)
 
-bot = CustomBot(token=token, parse_mode=ParseMode.HTML)
+bot = CustomBot(token=TOKEN, parse_mode=ParseMode.HTML)
 dp = Dispatcher(bot=bot, storage=storage)
