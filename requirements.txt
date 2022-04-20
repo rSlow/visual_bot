@@ -13,3 +13,5 @@ multidict==6.0.2
 pytz==2022.1
 SQLAlchemy==1.4.35
 yarl==1.7.2
+
+Flask~=2.1.1

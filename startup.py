@@ -8,3 +8,7 @@ async def on_startup(_):
         import handlers
     except ImportError as ex:
         logging.warn(msg="[IMPORT ERROR]", exc_info=ex)
+
+
+async def on_shutdown(_):
+    await bot.delete_webhook()
