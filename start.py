@@ -9,7 +9,8 @@ if __name__ == '__main__':
     executor.start_webhook(dispatcher=dp,
                            skip_updates=True,
                            on_startup=on_startup,
-                           webhook_path=WEBHOOK_PATH)
+                           webhook_path=WEBHOOK_PATH,
+                           port=5000)
 
     # executor.start_polling(dispatcher=dp,
     #                        skip_updates=True,
