@@ -3,6 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 
 from sql_urls import DATABASE_URL
+import logging
 
 Engine = create_engine(
     DATABASE_URL, connect_args={"check_same_thread": False}
@@ -25,6 +26,7 @@ class QueuePost(Base):
 
     @classmethod
     def add_post(cls, post):
+        logging.info("Appended post")
         with Session.begin() as session:
             session.add(cls(
                 user_id=post.user_id,

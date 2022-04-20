@@ -13,10 +13,11 @@ from .mains import main_menu
 
 @dp.message_handler(Text(contains="Предложить фото"))
 async def add_photos(message: Message, state: FSMContext):
-    await AddPost.next()
-    await message.answer("Загрузите необходимые фото (не документом!) 🎑\n"
+    await AddPost.photo.set()
+    await message.answer("Загрузите необходимые фото (<u>не документом!</u>) 🎑\n"
                          "Успешно загруженные фотографии будет удалены из чата.\n"
-                         "Как загрузите все - нажимаем кнопочку Далее...",
+                         "Как загрузите все - <u>нажимаем внизу кнопочку <b>Далее</b></u> "
+                         "(она может скрыться - тогда нажми 🎛 внизу...)",
                          reply_markup=photo_kb)
     async with state.proxy() as proxy:
         proxy["post_schema"] = Post(message.from_user.id, message.from_user.mention)
@@ -30,12 +31,12 @@ async def append_photo(message: Message, state: FSMContext):
 
 
 @dp.message_handler(Text(contains="Далее"), state=AddPost.photo)
-async def add_shooting_method(message: Message, state: FSMContext):
+async def confirm_photos_download(message: Message, state: FSMContext):
     async with state.proxy() as proxy:
         count_photos = len(proxy['post_schema'].image_ids)
         if not count_photos:
-            await main_menu(message, state, text="Не было загружено ни одного фото, "
-                                                 "возвращаемся в главное меню...")
+            await message.answer(text="Не было загружено ни одного фото! Давай еще разок 😌")
+            await add_photos(message, state)
         else:
             await AddPost.next()
             await message.delete()
@@ -60,7 +61,7 @@ async def add_shooting_method(message: Message, state: FSMContext):
 @dp.message_handler(state=AddPost.photo_editing)
 async def add_photo_processing(message: Message, state: FSMContext):
     async with state.proxy() as proxy:
-        if ~message.text.find("Фото без программы"):
+        if ~message.text.find("Фото без обработки"):
             proxy["post_schema"].photo_editing = None
         else:
             proxy["post_schema"].photo_editing = message.text.strip()
@@ -101,6 +102,7 @@ async def confirm(message: Message, state: FSMContext):
         text = "Пост предложен на публикацию."
         QueuePost.add_post(post)
         await main_menu(message=message, state=state, text=text + "\nЧто нибудь еще?")
+        await bot.send_message(chat_id=bot.admins[0], text="В предложку был добавлен пост...")
     elif ~message.text.find("Нет"):
         await main_menu(message=message, state=state, text="Отменяем...")
     else:

@@ -14,13 +14,13 @@ class CustomBot(Bot):
     def __init__(self, *args, **kwargs):
         super(CustomBot, self).__init__(*args, **kwargs)
         self.admins = [
-            959148697,
-            633760553
+            633760553,
+            959148697
         ]
         self.TZ = pytz.timezone("Asia/Vladivostok")
         self.queue = Queue()
-        self.channel_id = -1001768034794  # test
-        # self.channel_id = -1001566129579  # main
+        # self.channel_id = -1001768034794  # test
+        self.channel_id = -1001566129579  # main
 
     async def send_post(self, post: Post, chat_id: Union[int, str]) -> list[Message]:
         post_media = PostMediaGroup()

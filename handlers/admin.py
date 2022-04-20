@@ -35,6 +35,7 @@ async def get_queue_element(message: Message, state: FSMContext):
             proxy["current_post_id"] = post_id
             proxy["post_backup"] = post
         kb = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2).add("Опубликовать", "Отклонить", "Редактировать")
+        kb.add("Назад")
         await bot.send_post_for_confirm(post, chat_id=message.from_user.id, reply_markup=kb)
     else:
         from handlers.mains import main_menu
@@ -119,14 +120,14 @@ async def edit_post_device_confirm(message: Message, state: FSMContext):
 
 
 @dp.message_handler(Text(contains="Место"), state=Admin.edit)
-async def edit_post_device(message: Message):
+async def edit_post_place(message: Message):
     await Admin.edit_place.set()
     await message.answer("Новое место съемки:",
                          reply_markup=cancel_kb)
 
 
 @dp.message_handler(state=Admin.edit_place)
-async def edit_post_device_confirm(message: Message, state: FSMContext):
+async def edit_post_place_confirm(message: Message, state: FSMContext):
     place = message.text.strip()
     async with state.proxy() as proxy:
         post_id = proxy["current_post_id"]
@@ -136,14 +137,14 @@ async def edit_post_device_confirm(message: Message, state: FSMContext):
 
 
 @dp.message_handler(Text(contains="Обработка"), state=Admin.edit)
-async def edit_post_device(message: Message):
+async def edit_post_method(message: Message):
     await Admin.edit_method.set()
     await message.answer("Новая программа для обработки:",
                          reply_markup=cancel_kb)
 
 
 @dp.message_handler(state=Admin.edit_method)
-async def edit_post_device_confirm(message: Message, state: FSMContext):
+async def edit_post_method_confirm(message: Message, state: FSMContext):
     photo_editing = message.text.strip()
     async with state.proxy() as proxy:
         post_id = proxy["current_post_id"]
