@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 from orm import QueuePost, Session
 from aiogram.types import MediaGroup
 
@@ -65,8 +65,10 @@ class Queue(dict):
         for post_id in self:
             return post_id
 
-    def get_first(self) -> tuple[int, Post]:
+    def get_first(self) -> Union[tuple[int, Post], tuple[None, None]]:
         post_id = self.get_first_post_id()
+        if not post_id:
+            return None, None
         post = self.get_post_by_id(post_id)
         return post_id, post
 

@@ -41,7 +41,7 @@ class QueuePost(Base):
     @classmethod
     def delete_post_by_id(cls, session, post_id: int):
         result = session.query(cls).filter(cls.id == post_id).one()
-        session.delete_by_id(result)
+        session.delete(result)
 
     @classmethod
     def update_post(cls, post):

@@ -45,7 +45,7 @@ async def get_queue_element(message: Message, state: FSMContext):
 async def post_confirm(message: Message, state: FSMContext):
     async with state.proxy() as proxy:
         post_id = proxy["current_post_id"]
-    post = bot.queue.get_first_post_id(post_id)
+    post = bot.queue.get_post_by_id(post_id)
     await bot.publish_post(post)
     bot.queue.delete_by_id(post_id=post_id)
     await message.answer("Опубликовано.")
@@ -73,7 +73,7 @@ async def edit_post(message: Message, state: FSMContext, text: Optional[str] = N
     post = bot.queue.get_post_by_id(post_id=post_id)
     kb = ReplyKeyboardMarkup(resize_keyboard=True, row_width=3).add("Камера", "Место", "Обработка")
     kb.add(*[f"Фото №{i + 1} 🗑" for i in range(len(post.image_ids))])
-    kb.add("Сохранить 💾", "Отменить ⛔")
+    kb.add("Сохранить 💾", "Не сохранять ⛔")
     await message.answer(text, reply_markup=kb)
 
 
@@ -87,7 +87,7 @@ async def save_post(message: Message, state: FSMContext):
     await get_queue_element(message=message, state=state)
 
 
-@dp.message_handler(Text(contains="Отменить"), state=Admin.edit)
+@dp.message_handler(Text(contains="Не сохранять"), state=Admin.edit)
 async def decline_edits_post(message: Message, state: FSMContext):
     async with state.proxy() as proxy:
         post_id = proxy["current_post_id"]
@@ -158,5 +158,7 @@ async def delete_photo(message: Message, state: FSMContext):
     async with state.proxy() as proxy:
         post_id = proxy["current_post_id"]
     post = bot.queue.get_post_by_id(post_id=post_id)
+    if len(post.image_ids) == 1:
+        return await edit_post(message=message, state=state, text="Невозможно удалить единственную фотографию.")
     post.delete_photo(photo_num)
     await edit_post(message=message, state=state, text=f"Фото №{photo_num} удалено.")
