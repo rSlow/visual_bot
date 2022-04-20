@@ -1,5 +1,4 @@
 import logging
-import os
 
 import pytz
 from aiogram import Bot, Dispatcher
@@ -45,7 +44,7 @@ class CustomBot(Bot):
 
 
 WEBHOOK_HOST = "https://sohavisualbot.herokuapp.com/"
-TOKEN = os.getenv("SOHABOT_TOKEN")
+TOKEN = "5378540697:AAGWsxYPguOQqB45jFwt3-scL0BPpzb1j-E"
 WEBHOOK_PATH = f"/{TOKEN}"
 WEBHOOK_URL = f"{WEBHOOK_HOST}/{WEBHOOK_PATH}"
 
