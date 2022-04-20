@@ -1,6 +1,8 @@
-from aiogram.types import Message, ContentType
-from bot import dp
 from asyncio import sleep
+
+from aiogram.types import Message, ContentType
+
+from bot import dp
 
 
 @dp.message_handler(content_types=ContentType.ANY, state="*")

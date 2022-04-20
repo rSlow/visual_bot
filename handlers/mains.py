@@ -1,9 +1,9 @@
-from aiogram.types import Message
-from aiogram.dispatcher.storage import FSMContext
 from aiogram.dispatcher.filters import Text, CommandStart
+from aiogram.dispatcher.storage import FSMContext
+from aiogram.types import Message
 from aiogram.types.reply_keyboard import ReplyKeyboardMarkup
-from FSM import AddPost
-from bot import dp
+
+from bot import dp, bot
 
 
 @dp.message_handler(Text(contains="Отменить"), state="*")
@@ -21,5 +21,7 @@ async def main_menu(message: Message, state: FSMContext, text: str):
     if await state.get_state():
         await state.finish()
     kb = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
-    kb.add("Предложить фото 📷", "Редактировать посты ✏")
+    if message.from_user.id in bot.admins:
+        kb.add("Просмотреть очередь")
+    kb.add("Предложить фото 📷")
     return await message.answer(text, reply_markup=kb)
