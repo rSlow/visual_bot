@@ -45,9 +45,10 @@ class CustomBot(Bot):
 
 
 TOKEN = os.getenv("SOHABOT_TOKEN", "5378540697:AAGWsxYPguOQqB45jFwt3-scL0BPpzb1j-E")
+proxy_url = 'http://proxy.server:3128'
 
 storage = MemoryStorage()
 logging.basicConfig(level=logging.INFO)
 
-bot = CustomBot(token=TOKEN, parse_mode=ParseMode.HTML)
+bot = CustomBot(token=TOKEN, parse_mode=ParseMode.HTML, proxy=proxy_url)
 dp = Dispatcher(bot=bot, storage=storage)
