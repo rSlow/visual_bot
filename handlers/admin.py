@@ -26,7 +26,7 @@ def admin_required(func):
 @dp.message_handler(Text(contains="Просмотреть очередь"))
 @admin_required
 async def get_queue_element(message: Message, state: FSMContext):
-    bot.queue = Queue.from_database()
+    bot.queue = await Queue.from_database()
     await Admin.start.set()
     post_id, post = bot.queue.get_first()
     if post_id:
@@ -48,7 +48,7 @@ async def post_confirm(message: Message, state: FSMContext):
         post_id = proxy["current_post_id"]
     post = bot.queue.get_post_by_id(post_id)
     await bot.publish_post(post)
-    bot.queue.delete_by_id(post_id=post_id)
+    await bot.queue.delete_by_id(post_id=post_id)
     await message.answer("Опубликовано.")
     await get_queue_element(message=message, state=state)
 
@@ -57,7 +57,7 @@ async def post_confirm(message: Message, state: FSMContext):
 async def post_decline(message: Message, state: FSMContext):
     async with state.proxy() as proxy:
         post_id = proxy["current_post_id"]
-    bot.queue.delete_by_id(post_id=post_id)
+    await bot.queue.delete_by_id(post_id=post_id)
     await message.answer("Отклонено.")
     await get_queue_element(message=message, state=state)
 
@@ -83,7 +83,7 @@ async def save_post(message: Message, state: FSMContext):
     async with state.proxy() as proxy:
         post_id = proxy["current_post_id"]
     post = bot.queue.get_post_by_id(post_id=post_id)
-    post.update()
+    await post.update()
     await message.answer("Изменения сохранены.")
     await get_queue_element(message=message, state=state)
 

@@ -100,7 +100,7 @@ async def confirm(message: Message, state: FSMContext):
         post: Post = proxy["post_schema"]
     if ~message.text.find("Да"):
         text = "Пост предложен на публикацию."
-        QueuePost.add_post(post)
+        await QueuePost.add_post(post)
         await main_menu(message=message, state=state, text=text + "\nЧто нибудь еще?")
         await bot.send_message(chat_id=bot.admins[0], text="В предложку был добавлен пост...")
     elif ~message.text.find("Нет"):

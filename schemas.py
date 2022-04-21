@@ -27,7 +27,6 @@ class Post:
     def from_orm_result(cls, result: QueuePost):
         post = cls(result.user_id, result.user_mention)
         post.id = result.id
-        post.mention = result.user_mention
         post.device = result.device
         post.place = result.place
         post.image_ids = [orm.image_id for orm in result.image_ids]
@@ -37,8 +36,8 @@ class Post:
     def delete_photo(self, photo_num: int):
         del self.image_ids[photo_num - 1]
 
-    def update(self):
-        QueuePost.update_post(self)
+    async def update(self):
+        await QueuePost.update_post(self)
 
 
 class PostMediaGroup(MediaGroup):
@@ -56,9 +55,9 @@ class Queue(dict):
         super(Queue, self).__init__(*args, **kwargs)
 
     @classmethod
-    def from_database(cls):
-        with Session.begin() as session:
-            results: list[QueuePost] = QueuePost.get_all_posts(session=session)
+    async def from_database(cls):
+        async with Session() as session:
+            results: list[QueuePost] = await QueuePost.get_all_posts(session=session)
             return cls({post.id: post for post in [Post.from_orm_result(result) for result in results]})
 
     def get_first_post_id(self) -> int:
@@ -75,7 +74,8 @@ class Queue(dict):
     def get_post_by_id(self, post_id) -> Post:
         return self[post_id]
 
-    def delete_by_id(self, post_id) -> None:
+    async def delete_by_id(self, post_id) -> None:
+        async with Session() as session:
+            async with session.begin():
+                await QueuePost.delete_post_by_id(session=session, post_id=post_id)
         del self[post_id]
-        with Session.begin() as session:
-            QueuePost.delete_post_by_id(session=session, post_id=post_id)
