@@ -50,5 +50,9 @@ proxy_url = 'http://proxy.server:3128'
 storage = MemoryStorage()
 logging.basicConfig(level=logging.INFO)
 
-bot = CustomBot(token=TOKEN, parse_mode=ParseMode.HTML, proxy=proxy_url)
+bot = CustomBot(
+    token=TOKEN,
+    parse_mode=ParseMode.HTML,
+    proxy=proxy_url
+)
 dp = Dispatcher(bot=bot, storage=storage)
