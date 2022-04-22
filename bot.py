@@ -44,8 +44,7 @@ class CustomBot(Bot):
         return await self.send_post(post=post, chat_id=self.channel_id)
 
 
-TOKEN = os.getenv("SOHABOT_TOKEN", "5378540697:AAGWsxYPguOQqB45jFwt3-scL0BPpzb1j-E")
-proxy_url = 'http://proxy.server:3128'
+TOKEN = os.getenv("VISUALBOT_TOKEN")
 
 storage = MemoryStorage()
 logging.basicConfig(level=logging.INFO)
